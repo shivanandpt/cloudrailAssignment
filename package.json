@@ -1,0 +1,17 @@
+{
+  "name": "cloudrail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Shivanand Patil",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "debug": "^4.3.2",
+    "node-opcua": "^2.47.0"
+  }
+}
