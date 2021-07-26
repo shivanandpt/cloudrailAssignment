@@ -1,6 +1,6 @@
-To run project 
+#To run project 
 
-steps 
+#steps 
     1. Clone the repo 
     2. Run npm install 
     3. Run server using `npm run start`. It will log url in cosole then server is started
