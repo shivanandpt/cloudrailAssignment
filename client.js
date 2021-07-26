@@ -40,7 +40,6 @@ async function main() {
 
         const browseResult = await session.browse("RootFolder");
 
-      
         for (const reference of browseResult.references) {
           debug("   -> ", chalk.yellow(reference.browseName.toString()));
         }
@@ -54,61 +53,58 @@ async function main() {
             publishingEnabled: true,
             priority: 10
         });
-          
-          subscription
-            .on("started", function() {
+
+        subscription
+        .on("started", function() {
               debug(
                 "subscription started for 2 seconds - subscriptionId=",
                 chalk.yellow(subscription.subscriptionId)
               );
-            })
-            .on("keepalive", function() {
+        })
+        .on("keepalive", function() {
               debug("keepalive");
-            })
-            .on("terminated", function() {
+        })
+        .on("terminated", function() {
               debug("terminated");
-            });
-          
-          // install monitored item
-          
-          const itemToMonitor = {
-            nodeId: "ns=1;b=1020FFAA",
-            attributeId: AttributeIds.Value
-          };
-          const parameters = {
-            samplingInterval: 100,
-            discardOldest: true,
-            queueSize: 10
-          };
-          
-          const monitoredItem = ClientMonitoredItem.create(
-            subscription,
-            itemToMonitor,
-            parameters,
-            TimestampsToReturn.Both
-          );
-          
-          monitoredItem.on("changed", (dataValue) => {
-            if (!oldValue || dataValue.value > oldValue) {
-              debug(" value has changed : ", chalk.green(dataValue.value.toString()));
-            } else {
-              debug(" value has changed : ", chalk.red(dataValue.value.toString()))
-            }
-            oldValue = dataValue.value
-          });
-          
-          await timeout(10000);
-          
-          debug("now terminating subscription");
-          await subscription.terminate();
-          
+        });
+
+        const itemToMonitor = {
+          nodeId: "ns=1;b=1020FFAA",
+          attributeId: AttributeIds.Value
+        };
+        const parameters = {
+          samplingInterval: 100,
+          discardOldest: true,
+          queueSize: 10
+        };
+
+        const monitoredItem = ClientMonitoredItem.create(
+          subscription,
+          itemToMonitor,
+          parameters,
+          TimestampsToReturn.Both
+        );
+
+        monitoredItem.on("changed", (dataValue) => {
+          let currentValue = parseFloat(dataValue.value.value.toString());
+          if (!oldValue || dataValue.value.value.toString() > oldValue) {
+            debug("Value of the temperature sensor in degrees: ", chalk.green(currentValue));
+          } else {
+            debug("Value of the temperature sensor in degrees: ", chalk.red(currentValue))
+          }
+          oldValue = currentValue;
+        });
+
+        await timeout(60000);
+
+        debug("now terminating subscription");
+        await subscription.terminate();
 
         await session.close();
         debug("session closed !");
 
         await client.disconnect();
         debug("done !");
-        
     } 
     catch(err) {
         debug("error", err);

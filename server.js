@@ -27,9 +27,7 @@ const port = 4334;
     });
 
     function tempForDHT22(min, max) {
-        min = Math.ceil(min); // gives next greates 
-        max = Math.floor(max); // gives equl or less  
-        return (Math.random() * (max - min + 1) + min).toFixed(2); //The maximum is inclusive and the minimum is inclusive
+        return (Math.random() * (max - min) + min).toFixed(2);
     };
     let variable1 = tempForDHT22(-40, 80);
     setInterval(() => {  variable1 = tempForDHT22(-40, 80); }, 500);
